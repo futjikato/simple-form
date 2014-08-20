@@ -1,0 +1,19 @@
+{
+  "name": "simple-form-element",
+  "version": "0.0.0",
+  "authors": [
+    "Moritz Spindelhirn <m.spindelhirn@cashiers-check.de>"
+  ],
+  "description": "Render a simple form.",
+  "keywords": "polymer, web-components, form, simple-form",
+  "main": "simple-form.html",
+  "license": "MIT",
+  "homepage": "https://github.com/futjikato/simple-form/",
+  "ignore": [
+    "**/.*"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~0.3.4",
+    "polymer-test-tools": "Polymer/polymer-test-tools#~0.3.3"
+  }
+}

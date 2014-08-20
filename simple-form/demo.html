@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>simple-form Demo</title>
+
+  <script src="../bower_components/platform/platform.js"></script>
+
+  <link rel="import" href="../simple-form.html">
+  <link rel="import" href="../simple-form-question.html">
+
+    <style>
+        /* font-face and keyframes are not supported yet in shadow DOM but must be declared in global space */
+        @font-face {
+            font-weight: normal;
+            font-style: normal;
+            font-family: 'icomoon';
+            src:url('../fonts/icomoon/icomoon.eot?-9heso');
+            src:url('../fonts/icomoon/icomoon.eot?#iefix-9heso') format('embedded-opentype'),
+            url('../fonts/icomoon/icomoon.woff?-9heso') format('woff'),
+            url('../fonts/icomoon/icomoon.ttf?-9heso') format('truetype'),
+            url('../fonts/icomoon/icomoon.svg?-9heso#icomoon') format('svg');
+        }
+
+        @-webkit-keyframes moveUpFromDown {
+            from { -webkit-transform: translateY(100%); }
+            to { -webkit-transform: translateY(0); }
+        }
+
+        @keyframes moveUpFromDown {
+            from { -webkit-transform: translateY(100%); transform: translateY(100%); }
+            to { -webkit-transform: translateY(0); transform: translateY(0); }
+        }
+    </style>
+</head>
+<body unresolved>
+
+  <p>An example of using <code>&lt;simple-form></code> with <code>&lt;simple-form-question></code>:</p>
+
+  <simple-form>
+      <simple-form-question>Question 1</simple-form-question>
+      <simple-form-question>Question 2</simple-form-question>
+  </simple-form>
+
+</body>
+</html>

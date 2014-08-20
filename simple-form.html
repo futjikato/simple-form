@@ -1,0 +1,74 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+
+<!--
+Element providing solution to no problem in particular.
+Template origin http://tympanus.net/codrops/2014/04/01/minimal-form-interface/
+
+##### Example
+
+```
+<simple-form>
+    <simple-form-question>Question 1</simple-form-question>
+</simple-form>
+```
+
+@element simple-form
+@blurb Renders a simple form. See the original demo at tympanus.net
+@status alpha
+@homepage http://futjikato.github.io/simple-form
+-->
+<polymer-element name="simple-form" on-question-done="{{ nextQuestion }}">
+    <template>
+        <link rel="stylesheet" type="text/css" href="simple-form.css">
+        <form id="theform" class="simform" autocomplete="off">
+            <div class="simform-inner">
+                <div class="questions">
+                    <content id="questioncontainer" select="simple-form-question"/>
+                </div><!-- /questions -->
+                <button class="submit" type="submit">Send answers</button>
+                <div class="controls">
+                    <button id="btnnext" on-click="{{ nextQuestion }}" class="next show"></button>
+                    <div class="progress" id="progressbar"></div>
+                    <span class="number">
+                        <span class="number-current"></span>
+                        <span class="number-total"></span>
+                    </span>
+                    <template if="{{ error }}">
+                        <span class="error-message show">{{ error }}</span>
+                    </template>
+                </div><!-- / controls -->
+            </div><!-- /simform-inner -->
+            <span class="final-message"></span>
+        </form>
+    </template>
+    <script>
+        (function() {
+            'use strict';
+
+            var questions =  [],
+                current = 0,
+                currentQuestion;
+
+            Polymer('simple-form', {
+                error: '',
+                domReady: function() {
+                    questions = this.$.questioncontainer.getDistributedNodes();
+                    currentQuestion = questions[0];
+                    currentQuestion.classList.add('current');
+                },
+                nextQuestion: function(e) {
+                    e.preventDefault();
+
+                    currentQuestion.classList.remove('current');
+
+                    current++;
+
+                    this.$.progressbar.style.width = current * ( 100 / questions.length ) + '%';
+
+                    currentQuestion = questions[current];
+                    currentQuestion.classList.add('current');
+                }
+            });
+        })();
+    </script>
+</polymer-element>
