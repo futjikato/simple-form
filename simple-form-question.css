@@ -35,7 +35,7 @@ span label {
     transform: translateY(0);
 }
 
-:host(.show-next.current) span label {
+:host(.show-next) span label {
     -webkit-animation: moveUpFromDown 0.4s both;
     animation: moveUpFromDown 0.4s both;
 }

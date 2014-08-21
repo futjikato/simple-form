@@ -13,11 +13,11 @@ Template origin http://tympanus.net/codrops/2014/04/01/minimal-form-interface/
 ```
 
 @element simple-form
-@blurb Renders a simple form. See the original demo at tympanus.net
+@blurb Renders a simple form. See the original demo at tympanus.net/codrops
 @status alpha
 @homepage http://futjikato.github.io/simple-form
 -->
-<polymer-element name="simple-form" on-question-done="{{ nextQuestion }}">
+<polymer-element name="simple-form" attributes="finalmsg" on-question-done="{{ nextQuestion }}">
     <template>
         <link rel="stylesheet" type="text/css" href="simple-form.css">
         <form id="theform" class="simform" autocomplete="off">
@@ -28,17 +28,17 @@ Template origin http://tympanus.net/codrops/2014/04/01/minimal-form-interface/
                 <button class="submit" type="submit">Send answers</button>
                 <div class="controls">
                     <button id="btnnext" on-click="{{ nextQuestion }}" class="next show"></button>
-                    <div class="progress" id="progressbar"></div>
+                    <div class="progress" id="progressbar" on-transitionend="{{ transendfn }}"></div>
                     <span class="number">
-                        <span class="number-current"></span>
-                        <span class="number-total"></span>
+                        <span class="number-current">{{ current }}</span>
+                        <span class="number-total">{{ total }}</span>
                     </span>
                     <template if="{{ error }}">
                         <span class="error-message show">{{ error }}</span>
                     </template>
                 </div><!-- / controls -->
             </div><!-- /simform-inner -->
-            <span class="final-message"></span>
+            <span class="final-message">{{ finalmsg }}</span>
         </form>
     </template>
     <script>
@@ -46,27 +46,56 @@ Template origin http://tympanus.net/codrops/2014/04/01/minimal-form-interface/
             'use strict';
 
             var questions =  [],
-                current = 0,
                 currentQuestion;
 
             Polymer('simple-form', {
                 error: '',
+                current : 0,
+                total: 0,
+                finalmsg: 'Well done!',
                 domReady: function() {
                     questions = this.$.questioncontainer.getDistributedNodes();
                     currentQuestion = questions[0];
+                    this.total = questions.length;
                     currentQuestion.classList.add('current');
                 },
                 nextQuestion: function(e) {
                     e.preventDefault();
 
-                    currentQuestion.classList.remove('current');
+                    if(this.current >= (this.total - 1)) {
+                        this.fire('done');
+                        this.done();
+                        return;
+                    }
 
-                    current++;
+                    var oldQ = currentQuestion;
+                    this.current++;
+                    currentQuestion = questions[this.current];
 
-                    this.$.progressbar.style.width = current * ( 100 / questions.length ) + '%';
+                    // start animations
+                    oldQ.classList.add('show-next');
 
-                    currentQuestion = questions[current];
+                    // calculate new progress
+                    this.$.progressbar.style.width = this.current * ( 100 / this.total ) + '%';
+
+                    // remove current from last and add to new question
                     currentQuestion.classList.add('current');
+                    oldQ.classList.remove('current');
+                },
+                transendfn: function(e) {
+                    for(var i = 0; i < questions.length ; i++) {
+                        questions[i].classList.remove('show-next');
+                    }
+                },
+                done: function() {
+                    this.current = this.total;
+                    this.$.progressbar.style.width = '100%';
+
+                    var inner = this.shadowRoot.querySelector('.simform-inner');
+                    if(inner) { inner.classList.add('hide'); }
+
+                    var finalMsg = this.shadowRoot.querySelector('.final-message');
+                    if(finalMsg) { finalMsg.classList.add('show'); }
                 }
             });
         })();
