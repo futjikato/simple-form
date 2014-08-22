@@ -7,7 +7,6 @@
   <script src="bower_components/platform/platform.js"></script>
 
   <link rel="import" href="simple-form.html">
-  <link rel="import" href="simple-form-question.html">
 
     <style>
         /* font-face and keyframes are not supported yet in shadow DOM but must be declared in global space */
@@ -35,11 +34,14 @@
 </head>
 <body unresolved>
 
-  <p>An example of using <code>&lt;simple-form></code> with <code>&lt;simple-form-question></code>:</p>
+  <p>An example of using <code>&lt;simple-form></code>:</p>
 
   <simple-form>
-      <simple-form-question>Question 1</simple-form-question>
-      <simple-form-question>Question 2</simple-form-question>
+      <input type="text" name="q1" placeholder="Text">
+      <input type="text" name="q1" placeholder="Required Text" required>
+      <input type="email" name="q2" placeholder="eMail address">
+      <input type="password" name="q3" placeholder="Password">
+      <input type="color" name="q4" placeholder="Color">
   </simple-form>
 
 </body>

@@ -1,4 +1,5 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/juicy-htm/juicy-html.html">
 
 <!--
 Element providing solution to no problem in particular.
@@ -8,7 +9,11 @@ Template origin http://tympanus.net/codrops/2014/04/01/minimal-form-interface/
 
 ```
 <simple-form>
-    <simple-form-question>Question 1</simple-form-question>
+    <input type="text" name="q1" placeholder="Text">
+    <input type="text" name="q1" placeholder="Required Text" required>
+    <input type="email" name="q2" placeholder="eMail address">
+    <input type="password" name="q3" placeholder="Password">
+    <input type="color" name="q4" placeholder="Color">
 </simple-form>
 ```
 
@@ -17,14 +22,22 @@ Template origin http://tympanus.net/codrops/2014/04/01/minimal-form-interface/
 @status alpha
 @homepage http://futjikato.github.io/simple-form
 -->
-<polymer-element name="simple-form" attributes="finalmsg" on-question-done="{{ nextQuestion }}">
+<polymer-element name="simple-form" attributes="finalmsg">
     <template>
         <link rel="stylesheet" type="text/css" href="simple-form.css">
         <form id="theform" class="simform" autocomplete="off">
             <div class="simform-inner">
-                <div class="questions">
-                    <content id="questioncontainer" select="simple-form-question"/>
-                </div><!-- /questions -->
+                <ol class="questions">
+                    <template repeat="{{ q in questions }}">
+                        <li class="{{ {question: true, current: q.current, 'show-next': q.shownext} | tokenList }}">
+                            <span>
+                                <label>{{ q.label }}</label>
+                            </span>
+                            <template is="juicy-html" content="{{ q.el.innerHTML }}"></template>
+                        </li>
+                    </template>
+                    <content id="content" select="input"></content>
+                </ol><!-- /questions -->
                 <button class="submit" type="submit">Send answers</button>
                 <div class="controls">
                     <button id="btnnext" on-click="{{ nextQuestion }}" class="next show"></button>
@@ -33,9 +46,6 @@ Template origin http://tympanus.net/codrops/2014/04/01/minimal-form-interface/
                         <span class="number-current">{{ current }}</span>
                         <span class="number-total">{{ total }}</span>
                     </span>
-                    <template if="{{ error }}">
-                        <span class="error-message show">{{ error }}</span>
-                    </template>
                 </div><!-- / controls -->
             </div><!-- /simform-inner -->
             <span class="final-message">{{ finalmsg }}</span>
@@ -45,19 +55,32 @@ Template origin http://tympanus.net/codrops/2014/04/01/minimal-form-interface/
         (function() {
             'use strict';
 
-            var questions =  [],
-                currentQuestion;
+            var currentQuestion;
 
             Polymer('simple-form', {
-                error: '',
                 current : 0,
                 total: 0,
                 finalmsg: 'Well done!',
+                questions : null,
+                ready : function() {
+                    this.questions = [];
+                },
                 domReady: function() {
-                    questions = this.$.questioncontainer.getDistributedNodes();
-                    currentQuestion = questions[0];
-                    this.total = questions.length;
-                    currentQuestion.classList.add('current');
+                    var inputs = this.$.content.getDistributedNodes();
+
+                    for(var i = 0 ; i < inputs.length ; i++) {
+                        var div = wrap(document.createElement('div'));
+                        div.appendChild(inputs[i]);
+                        this.questions.push({
+                            el: div,
+                            label: inputs[i].getAttribute('placeholder') || 'Question',
+                            current: false,
+                            shownext: false
+                        });
+                        inputs[i].setAttribute('placeholder', '');
+                    }
+
+                    this.questions[0].current = true;
                 },
                 nextQuestion: function(e) {
                     e.preventDefault();
@@ -70,21 +93,21 @@ Template origin http://tympanus.net/codrops/2014/04/01/minimal-form-interface/
 
                     var oldQ = currentQuestion;
                     this.current++;
-                    currentQuestion = questions[this.current];
+                    currentQuestion = this.questions[this.current];
 
                     // start animations
-                    oldQ.classList.add('show-next');
+                    oldQ.shownext = true;
 
                     // calculate new progress
                     this.$.progressbar.style.width = this.current * ( 100 / this.total ) + '%';
 
                     // remove current from last and add to new question
-                    currentQuestion.classList.add('current');
-                    oldQ.classList.remove('current');
+                    currentQuestion.current = true;
+                    oldQ.current = false;
                 },
                 transendfn: function(e) {
-                    for(var i = 0; i < questions.length ; i++) {
-                        questions[i].classList.remove('show-next');
+                    for(var i = 0; i < this.questions.length ; i++) {
+                        this.questions[i].shownext = false;
                     }
                 },
                 done: function() {
