@@ -80,7 +80,8 @@ Template origin http://tympanus.net/codrops/2014/04/01/minimal-form-interface/
                         inputs[i].setAttribute('placeholder', '');
                     }
 
-                    this.questions[0].current = true;
+                    this.questions[this.current].current = true;
+                    this.total = this.questions.length;
                 },
                 nextQuestion: function(e) {
                     e.preventDefault();
