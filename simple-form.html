@@ -43,7 +43,7 @@ Template origin http://tympanus.net/codrops/2014/04/01/minimal-form-interface/
                     <button id="btnnext" on-click="{{ nextQuestion }}" class="next show"></button>
                     <div class="progress" id="progressbar" on-transitionend="{{ transendfn }}"></div>
                     <span class="number">
-                        <span class="number-current">{{ current }}</span>
+                        <span class="number-current">{{ current + 1 }}</span>
                         <span class="number-total">{{ total }}</span>
                     </span>
                 </div><!-- / controls -->
@@ -80,7 +80,8 @@ Template origin http://tympanus.net/codrops/2014/04/01/minimal-form-interface/
                         inputs[i].setAttribute('placeholder', '');
                     }
 
-                    this.questions[this.current].current = true;
+                    currentQuestion = this.questions[this.current];
+                    currentQuestion.current = true;
                     this.total = this.questions.length;
                 },
                 nextQuestion: function(e) {
